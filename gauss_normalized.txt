@@ -1,19 +1,4 @@
-#include "includes/common.h"
-
-int in_grid_lenia(int x, int y) {
-	if (x >= 0 && x < GRID_W && y >= 0 && y < GRID_H) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-
-// double gaussian(double x, double mu, double sigma) {
-//   return 1 / (sigma * sqrt(2 * M_PI)) * exp(-0.5 * pow((x - mu) / sigma, 2));
-// }
-
-double gaussian(int x) {
-	static double gauss[801] = { 0.0,
+{ 0.0,
  0.0003358884248838177,
  0.00034842157506604965,
  0.0003634613552847281,
@@ -813,35 +798,5 @@ double gaussian(int x) {
  0.00039354091572208486,
  0.0003785011355034065,
  0.0003634613552847281,
- 0.00034842157506604965 };
-	return gauss[x];
-}
-
-// B3/S23 (Born with 3 neighbours and Survive with 2 or 3 neighbours == conway)
-void next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
-	int i,j;
-
-	for(i = 0; i < GRID_W ; i++) {
-		for(j = 0 ; j < GRID_H ; j++) {
-			float sum = 0.0;
-			if(in_grid_lenia(i-1, j-1) && grid[i-1][j-1] > 0.0)
-				sum += grid[i-1][j-1];
-			if(in_grid_lenia(i, j-1) && grid[i][j-1] > 0.0)
-				sum += grid[i][j-1];
-			if(in_grid_lenia(i+1,j-1) && grid[i+1][j-1] > 0.0)
-				sum += grid[i+1][j-1];
-			if(in_grid_lenia(i-1, j) && grid[i-1][j] > 0.0)
-				sum += grid[i-1][j];
-			if(in_grid_lenia(i+1,j) && grid[i+1][j] > 0.0)
-				sum += grid[i+1][j];
-			if(in_grid_lenia(i-1,j+1) && grid[i-1][j+1] > 0.0)
-				sum += grid[i-1][j+1];
-			if(in_grid_lenia(i,j+1) && grid[i][j+1] > 0.0)
-				sum += grid[i][j+1];
-			if(in_grid_lenia(i+1,j+1) && grid[i+1][j+1] > 0.0)
-				sum += grid[i+1][j+1];
-			// lenia simplified
-			grid2[i][j] = gaussian(floor(sum * 100));
-		}
-	}
-}
+ 0.00034842157506604965,
+ 0.0003358884248838177 }

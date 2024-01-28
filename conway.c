@@ -10,7 +10,7 @@ int in_grid(int x, int y) {
 
 
 // B3/S23 (Born with 3 neighbours and Survive with 2 or 3 neighbours == conway)
-void next_cycle(int (*grid)[GRID_H], int (*grid2)[GRID_H]){
+void next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
 	int i,j;
 
 	for(i = 0; i < GRID_W ; i++) {

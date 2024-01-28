@@ -1,24 +1,46 @@
 #include "includes/common.h"
 
-void reinit_grid(int (*grid)[GRID_H]) {
+void reinit_grid(float (*grid)[GRID_H]) {
   int i,j;
   for(i = 0 ; i < GRID_W ; i++) {
     for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = 0;
+      grid[i][j] = 0.0;
     }
   }
 }
 
-void draw_grid(SDL_Renderer *renderer, int grid[GRID_W][GRID_H]) {
+void init_lenia(float (*grid)[GRID_H]) {
+  int i,j;
+  for(i = 0 ; i < GRID_W ; i++) {
+    for (j = 0 ; j < GRID_H ; j++) {
+      grid[i][j] = rand() / RAND_MAX_FLOAT;
+      if (grid[i][j] <= 0.8) {
+        grid[i][j] = 0.0;
+      }
+      // printf("%f\n", grid[i][j]);
+    }
+  }
+}
+
+void draw_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]) {
   for (int i = 0 ; i < WINDOW_WIDTH ; i++) {
     for (int j = 0; j < WINDOW_HEIGHT ; j++) {
-      if (grid[i/RATE][j/RATE] == 1) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+      float cell;
+      if ((cell = grid[i/RATE][j/RATE]) > 0.0) {
+        Uint8 r = (int)((cell - floor(cell)) * 100) % 256; // 0.14 = > 0.14 * 100 => 14 % 256
+        // Uint8 g = (int)((cell - floor(cell)) * 100 * 2) % 256;
+        // Uint8 b = (int)((cell - floor(cell)) * 100) % 256;
+        // printf("%u\n", r);
+        SDL_SetRenderDrawColor(renderer, r, r, 64, 255);
         SDL_RenderDrawPoint(renderer, i, j);
       }
     }
   }
 }
+
+// double test_gauss(double x) {
+//   return 1 / (0.4 * sqrt(2 * M_PI)) * exp(-0.5 * pow((x - 4.0) / 0.4, 2));
+// }
 
 // cell value continue 0->1
 // sum neighbours creates emergence of new rules
@@ -38,8 +60,8 @@ int main() {
 
   SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  int grid[GRID_W][GRID_H] = { {0} };
-  int grid2[GRID_W][GRID_H] = { {0} };
+  float grid[GRID_W][GRID_H] = { {0} };
+  float grid2[GRID_W][GRID_H] = { {0} };
 
   SDL_Event event;
   int quit = 0;
@@ -47,6 +69,8 @@ int main() {
   int current_grid = 0;
   uint32_t last_cycle = SDL_GetTicks();
   int l_mouse_down, x_mouse, y_mouse = 0;
+
+  init_lenia(grid);
 
   while (!quit) {
     while (SDL_PollEvent(&event)) {
@@ -96,11 +120,11 @@ int main() {
     if(start && ((currTime - last_cycle) / 1000.0) > SPEED) {
       last_cycle = currTime;
       if (current_grid == 0) {
-        next_cycle(grid, grid2);
+        next_cycle_lenia(grid, grid2);
         reinit_grid(grid);
         current_grid = 1;
       } else {
-        next_cycle(grid2, grid);
+        next_cycle_lenia(grid2, grid);
         reinit_grid(grid2);
         current_grid = 0;
       }
