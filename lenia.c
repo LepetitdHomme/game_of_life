@@ -1,5 +1,17 @@
 #include "includes/common.h"
 
+void init_lenia(float (*grid)[GRID_H]) {
+  int i,j;
+  for(i = 0 ; i < GRID_W ; i++) {
+    for (j = 0 ; j < GRID_H ; j++) {
+      grid[i][j] = rand() / RAND_MAX_FLOAT;
+      if (grid[i][j] <= 0.8) { // play with this
+        grid[i][j] = 0.0;
+      }
+    }
+  }
+}
+
 int in_grid_lenia(int x, int y) {
 	if (x >= 0 && x < GRID_W && y >= 0 && y < GRID_H) {
 		return 1;
