@@ -13,7 +13,7 @@
 CC=gcc
 CFLAGS=-I/includes
 DEPS = common.h
-OBJ = main.o conway.o lenia.o
+OBJ = main.o events.o conway.o lenia.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
