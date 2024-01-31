@@ -9,17 +9,20 @@
 #   ../configure
 #   make
 #   sudo make install
+#
+# this project also requires SDL2 ttf -> sudo apt install libsdl2-ttf-dev
 
 CC=gcc
 CFLAGS=-I/includes
+LDFLAGS = -lm `sdl2-config --cflags --libs` -lSDL2_ttf
 DEPS = common.h
-OBJ = main.o events.o conway.o lenia.o
+OBJ = main.o grid.o events.o menu.o conway.o lenia.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 play: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) -lm `sdl2-config --cflags --libs`
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 re: clean play
 
