@@ -59,11 +59,7 @@ int main() {
   while (state.quit == FALSE) {
     state.current_time = SDL_GetTicks();
     while (SDL_PollEvent(&sdl.Event)) {
-      if (state.menu_opened && state.menu_pos_x >= 0) {
-        handle_menu_event(&menu, &state, &sdl.Event);
-      } else {
-        handle_event(&state, (state.current_grid == 0) ? grid : grid2 ,&sdl.Event);
-      }
+      handle_event(&state, (state.current_grid == 0) ? grid : grid2 ,&sdl.Event);
     }
     SDL_SetRenderDrawColor(sdl.renderer, 0, 0, 0, 255);
     SDL_RenderClear(sdl.renderer);

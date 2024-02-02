@@ -12,7 +12,7 @@
 #define RAND_MAX_FLOAT ((float)RAND_MAX + 1.0)
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
-#define SCALE 4
+#define SCALE 6
 #define CYCLE_INTERVAL 0.1 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
@@ -62,7 +62,6 @@ void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 
 /* 			events */
 void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
-void 		handle_menu_event(menu_t *menu, state_t *state, SDL_Event *event);
 
 /* 			conway */
 void 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]);

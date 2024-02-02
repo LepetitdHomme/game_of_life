@@ -14,7 +14,7 @@ void free_menu(menu_t *menu) {
 
 void open_menu(state_t *state) {
 	state->menu_opened = TRUE;
-	state->cycle_running = FALSE;
+	// state->cycle_running = FALSE;
 }
 
 void update_color(SDL_Color *color, Uint8 r, Uint8 g, Uint8 b) {
