@@ -2,6 +2,7 @@
 
 void init_game_state(state_t *state) {
   state->current_grid = 0; // switch between 2 grids for computing next cycle without erasing current values
+  state->current_rule = CONWAY;
   state->cycle_running = FALSE; // will next cycle be computed and displayed ?
   state->cycle_count = 0;
   state->cells_count = 0;
@@ -12,6 +13,14 @@ void init_game_state(state_t *state) {
   state->menu_button.y = MENU_WIDTH / 10;
   state->menu_button.w = state->menu_button.x;
   state->menu_button.h = state->menu_button.x;
+  state->reset_button.x = MENU_WIDTH * 20 / 100;
+  state->reset_button.y = state->reset_button.x / 2;
+  state->reset_button.w = state->reset_button.x;
+  state->reset_button.h = state->reset_button.x;
+  state->pause_button.x = MENU_WIDTH * 20 / 100;
+  state->pause_button.y = state->pause_button.x / 2;
+  state->pause_button.w = state->pause_button.x;
+  state->pause_button.h = state->pause_button.x;
   state->quit = FALSE;
   state->mouse_pos_x = 0;
   state->mouse_pos_y = 0;
@@ -39,6 +48,7 @@ void init_sdl(sdl_t *sdl) {
 }
 
 int main() {
+  srand(time(NULL));
   sdl_t sdl;
   sdl.window = NULL;
   sdl.renderer = NULL;
@@ -70,20 +80,42 @@ int main() {
         last_cycle = state.current_time;
         state.cycle_count++;
         if (state.current_grid == 0) {
-          // next_cycle_lenia(grid, grid2);
-          next_cycle(grid, grid2);
+          switch (state.current_rule) {
+            case CONWAY:
+              state.cells_count = next_cycle(grid, grid2);
+              break;
+            case PRIMORDIA:
+              state.cells_count = next_cycle_primordia(grid, grid2);
+              break;
+            case LENIA:
+              state.cells_count = next_cycle_lenia(grid, grid2);
+              break;
+            default:
+              state.cells_count = next_cycle(grid, grid2);
+          }
           reinitialize_grid(grid);
           state.current_grid = 1;
         } else {
-          // next_cycle_lenia(grid2, grid);
-          next_cycle(grid2, grid);
+          switch (state.current_rule) {
+            case CONWAY:
+              state.cells_count = next_cycle(grid2, grid);
+              break;
+            case PRIMORDIA:
+              state.cells_count = next_cycle_primordia(grid2, grid);
+              break;
+            case LENIA:
+              state.cells_count = next_cycle_lenia(grid2, grid);
+              break;
+            default:
+              state.cells_count = next_cycle(grid2, grid);
+          }
           reinitialize_grid(grid2);
           state.current_grid = 0;
         }
       }
     }
 
-    state.cells_count = draw_current_grid(sdl.renderer, (state.current_grid == 0) ? grid : grid2);
+    draw_current_grid(sdl.renderer, (state.current_grid == 0) ? grid : grid2);
     draw_menu(sdl.renderer, &menu, &state);
 
     // display_gauss(renderer);

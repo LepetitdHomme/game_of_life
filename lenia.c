@@ -5,11 +5,12 @@
 ** 1 / (sigma * sqrt(2 * M_PI)) * exp(-0.5 * pow((x - mu) / sigma, 2))
 */
 
+
 void init_lenia(float (*grid)[GRID_H]) {
   int i,j;
   for(i = 0 ; i < GRID_W ; i++) {
     for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = rand() / RAND_MAX_FLOAT;
+      grid[i][j] = random_float(0.0, 1.0);
       if (grid[i][j] <= 0.8) { // play with this
         grid[i][j] = 0.0;
       }
@@ -1678,34 +1679,57 @@ double gaussian(int type, int x) {
 		return gauss[x];
 	if (type == 1)
 		return gauss1[(int)x];
-	if (type == 1)
+	if (type == 2)
 		return gauss2[(int)x];
 }
 
-// B3/S23 (Born with 3 neighbours and Survive with 2 or 3 neighbours == conway)
-void next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
+int next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
 	int i,j;
+	int cells_count = 0;
+	int floored_sum;
 
 	for(i = 0; i < GRID_W ; i++) {
 		for(j = 0 ; j < GRID_H ; j++) {
 			float sum = 0.0;
-			if(is_in_grid(i-1, j-1) && grid[i-1][j-1] > 0.0)
+			if(is_in_grid(i-1, j-1) && grid[i-1][j-1] > 0.0){
 				sum += grid[i-1][j-1];
-			if(is_in_grid(i, j-1) && grid[i][j-1] > 0.0)
+			}
+			if(is_in_grid(i, j-1) && grid[i][j-1] > 0.0){
 				sum += grid[i][j-1];
-			if(is_in_grid(i+1,j-1) && grid[i+1][j-1] > 0.0)
+			}
+			if(is_in_grid(i+1,j-1) && grid[i+1][j-1] > 0.0){
 				sum += grid[i+1][j-1];
-			if(is_in_grid(i-1, j) && grid[i-1][j] > 0.0)
+			}
+			if(is_in_grid(i-1, j) && grid[i-1][j] > 0.0){
 				sum += grid[i-1][j];
-			if(is_in_grid(i+1,j) && grid[i+1][j] > 0.0)
+			}
+			/** Lenia takes into account the current cell ! **/
+			sum += grid[i][j];
+			/*************************************************/
+			if(is_in_grid(i+1,j) && grid[i+1][j] > 0.0){
 				sum += grid[i+1][j];
-			if(is_in_grid(i-1,j+1) && grid[i-1][j+1] > 0.0)
+			}
+			if(is_in_grid(i-1,j+1) && grid[i-1][j+1] > 0.0){
 				sum += grid[i-1][j+1];
-			if(is_in_grid(i,j+1) && grid[i][j+1] > 0.0)
+			}
+			if(is_in_grid(i,j+1) && grid[i][j+1] > 0.0){
 				sum += grid[i][j+1];
-			if(is_in_grid(i+1,j+1) && grid[i+1][j+1] > 0.0)
+			}
+			if(is_in_grid(i+1,j+1) && grid[i+1][j+1] > 0.0){
 				sum += grid[i+1][j+1];
-			grid2[i][j] = grid[i][j] + gaussian(1, floor(sum * 100));
+			}
+
+			if (sum < LENIA_THRESHOLD) {
+				floored_sum = floor(sum * 100);
+				if (floored_sum >= 0 && floored_sum < 801) {
+					grid2[i][j] = grid[i][j] + gaussian(0, floor(sum * 100));
+				}
+			}
+			if (grid2[i][j] > 0.0) {
+				cells_count++;
+			}
 		}
 	}
+
+	return cells_count;
 }

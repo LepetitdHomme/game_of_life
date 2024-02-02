@@ -1,8 +1,9 @@
 #include "includes/common.h"
 
 // B3/S23 (Born with 3 neighbours and Survive with 2 or 3 neighbours == conway)
-void next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
+int next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
 	int i,j;
+	int cells_count = 0;
 
 	for(i = 0; i < GRID_W ; i++) {
 		for(j = 0 ; j < GRID_H ; j++) {
@@ -27,6 +28,7 @@ void next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
 					count++;
 				if(count == 2 || count == 3) {
 					grid2[i][j] = 1;
+					cells_count++;
 				} else {
 					grid2[i][j] = 0;
 				}
@@ -50,8 +52,10 @@ void next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
 					count++;
 				if(count == 3) {
 					grid2[i][j] = 1;
+					cells_count++;
 				}
 			}
 		}
 	}
+	return cells_count;
 }

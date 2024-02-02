@@ -9,10 +9,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h> 
 
-#define RAND_MAX_FLOAT ((float)RAND_MAX + 1.0)
+// #define RAND_MAX_FLOAT ((float)RAND_MAX + 1.0)
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
-#define SCALE 6
+#define SCALE 2
 #define CYCLE_INTERVAL 0.1 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
@@ -21,8 +21,17 @@
 #define MENU_ANIMATION_SPEED WINDOW_WIDTH / 100
 #define VISIBLE_TEXT_SIZE 10
 
+#define LENIA_THRESHOLD 10.0
+#define KERNEL_SIZE 3
+
 #define TRUE 1
 #define FALSE 0
+
+enum Rule {
+	CONWAY,
+	PRIMORDIA,
+	LENIA
+};
 
 typedef struct {
 	SDL_Window 		*window;
@@ -43,15 +52,26 @@ typedef struct {
 	int 			menu_opened;
 	int 			menu_pos_x;
 	SDL_Rect 	menu_button;
+	SDL_Rect 	reset_button;
+	SDL_Rect 	pause_button;
+	SDL_Rect 	conway_button;
+	SDL_Rect 	primordia_button;
+	SDL_Rect 	lenia_button;
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
 	Uint32 		current_time;
+	enum Rule current_rule;
 } state_t;
 
 /* 			grid */
+float 	gaussianKernel(int i, int j);
+float 	conwayKernel(int i, int j);
+float 	vonNeumannKernel(int i, int j);
+float 	mooreKernel(int i, int j);
+float 	random_float(float lower_bound, float upper_bound);
 void 		reinitialize_grid(float (*grid)[GRID_H]);
-int 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
+void 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
 int 		is_in_grid(int x, int y);
 
 /* 			menu */
@@ -64,12 +84,16 @@ void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
 
 /* 			conway */
-void 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+int 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+
+/* 			primordia */
+void 		init_primordia(float (*grid)[GRID_H]);
+int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
 
 /* 			lenia */
-void 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
-double 	gaussian(int type, int x);
 void 		init_lenia(float (*grid)[GRID_H]);
+int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+double 	gaussian(int type, int x);
 void 		display_gauss(SDL_Renderer *renderer);
 
 #endif
