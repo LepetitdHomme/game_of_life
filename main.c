@@ -3,13 +3,15 @@
 void init_game_state(state_t *state) {
   state->current_grid = 0; // switch between 2 grids for computing next cycle without erasing current values
   state->cycle_running = FALSE; // will next cycle be computed and displayed ?
+  state->cycle_count = 0;
+  state->cells_count = 0;
   state->holding_left_mouse = FALSE;
   state->menu_opened = FALSE;
   state->menu_pos_x = -MENU_WIDTH;
   state->menu_button.x = MENU_WIDTH / 10;
   state->menu_button.y = MENU_WIDTH / 10;
-  state->menu_button.w = state->menu_button.x * 2;
-  state->menu_button.h = state->menu_button.x * 2;
+  state->menu_button.w = state->menu_button.x;
+  state->menu_button.h = state->menu_button.x;
   state->quit = FALSE;
   state->mouse_pos_x = 0;
   state->mouse_pos_y = 0;
@@ -32,11 +34,6 @@ void init_sdl(sdl_t *sdl) {
   }
   if (TTF_Init() == -1) {
     printf("SDL_ttf could not init ! %s\n", TTF_GetError());
-    exit(EXIT_FAILURE);
-  }
-  sdl->font = TTF_OpenFont("assets/future-earth.ttf", 50); // not really readable under 50 ?
-  if (sdl->font == NULL) {
-    printf("Failed to open font ! SDL_ttf error: %s\n", TTF_GetError());
     exit(EXIT_FAILURE);
   }
 }
@@ -75,6 +72,7 @@ int main() {
     if (state.cycle_running) {
       if ((state.current_time - last_cycle) / 1000.0 > CYCLE_INTERVAL) {
         last_cycle = state.current_time;
+        state.cycle_count++;
         if (state.current_grid == 0) {
           // next_cycle_lenia(grid, grid2);
           next_cycle(grid, grid2);
@@ -89,7 +87,7 @@ int main() {
       }
     }
 
-    draw_current_grid(sdl.renderer, (state.current_grid == 0) ? grid : grid2);
+    state.cells_count = draw_current_grid(sdl.renderer, (state.current_grid == 0) ? grid : grid2);
     draw_menu(sdl.renderer, &menu, &state);
 
     // display_gauss(renderer);
@@ -99,7 +97,6 @@ int main() {
 
   /*********** SDL FREE/QUIT ************/
   free_menu(&menu);
-  TTF_CloseFont(sdl.font);
   SDL_DestroyRenderer(sdl.renderer);
   SDL_DestroyWindow(sdl.window);
   TTF_Quit();

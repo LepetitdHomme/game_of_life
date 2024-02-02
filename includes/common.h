@@ -19,6 +19,7 @@
 
 #define MENU_WIDTH WINDOW_WIDTH / 5
 #define MENU_ANIMATION_SPEED WINDOW_WIDTH / 100
+#define VISIBLE_TEXT_SIZE 10
 
 #define TRUE 1
 #define FALSE 0
@@ -27,19 +28,17 @@ typedef struct {
 	SDL_Window 		*window;
 	SDL_Renderer 	*renderer;
 	SDL_Event 		Event;
-	TTF_Font 			*font;
 } sdl_t;
 
 typedef struct {
-	SDL_Texture 	*texture_title;
-	SDL_Texture 	*texture_instruction_1;
-	SDL_Texture 	*texture_instruction_2;
-	SDL_Texture 	*texture_instruction_3;
+	TTF_Font 			*font;
 } menu_t;
 
 typedef struct {
 	int 			current_grid;
 	int 			cycle_running;
+	int 			cycle_count;
+	int 			cells_count;
 	int 			holding_left_mouse;
 	int 			menu_opened;
 	int 			menu_pos_x;
@@ -52,7 +51,7 @@ typedef struct {
 
 /* 			grid */
 void 		reinitialize_grid(float (*grid)[GRID_H]);
-void 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
+int 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
 int 		is_in_grid(int x, int y);
 
 /* 			menu */

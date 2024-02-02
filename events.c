@@ -105,9 +105,9 @@ void handle_menu_event(menu_t *menu, state_t *state, SDL_Event *event) {
   /* KEYS */
   if (event->type == SDL_KEYDOWN) {
     /* runs or pauses life cycle */
-    // if (event->key.keysym.sym == SDLK_SPACE) {
-    //   toggle_pause(state);
-    // }
+    if (event->key.keysym.sym == SDLK_SPACE) {
+      toggle_pause(state);
+    }
 
     /* Ensure pause / Menu */
     if (event->key.keysym.sym == SDLK_ESCAPE) { // KEY UP instead ?
