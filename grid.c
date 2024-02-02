@@ -15,11 +15,13 @@ int draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]) {
   for (int i = 0 ; i < WINDOW_WIDTH ; i++) {
     for (int j = 0; j < WINDOW_HEIGHT ; j++) {
       float cell;
-      if ((cell = grid[i/SCALE][j/SCALE]) > 0.0) {
-        cells_count++;
-        Uint8 r = (int)((cell - floor(cell)) * 100) % 256;
-        SDL_SetRenderDrawColor(renderer, r, r, 64, 255);
-        SDL_RenderDrawPoint(renderer, i, j);
+      if (is_in_grid(i/SCALE, j/SCALE)) {
+        if ((cell = grid[i/SCALE][j/SCALE]) > 0.0) {
+          cells_count++;
+          Uint8 r = (int)((cell - floor(cell)) * 100) % 256;
+          SDL_SetRenderDrawColor(renderer, r, r, 64, 255);
+          SDL_RenderDrawPoint(renderer, i, j);
+        }
       }
     }
   }
