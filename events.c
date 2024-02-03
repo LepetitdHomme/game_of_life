@@ -26,9 +26,9 @@ void reset_game(state_t *state, float (*grid)[GRID_H]) {
   state->cells_count = 0;
 }
 
-int mouse_on_button(SDL_Rect button, int mouse_x, int mouse_y) {
-  if (mouse_x >= button.x && mouse_x < button.x + button.w
-    && mouse_y >= button.y && mouse_y < button.y + button.h) {
+int mouse_on_button(SDL_Rect button, state_t *state) {
+  if (state->mouse_pos_x >= button.x && state->mouse_pos_x < button.x + button.w
+    && state->mouse_pos_y >= button.y && state->mouse_pos_y < button.y + button.h) {
     return 1;
   } else {
     return 0;
@@ -46,26 +46,24 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
 
   if (event->type == SDL_MOUSEBUTTONDOWN) {
     if (event->button.button == SDL_BUTTON_LEFT) {
-      if (mouse_on_button(state->menu_button, state->mouse_pos_x, state->mouse_pos_y)) {
+      if (!state->menu_opened && mouse_on_button(state->menu_button, state)) {
         open_menu(state);
-      } else if (mouse_on_button(state->reset_button, state->mouse_pos_x, state->mouse_pos_y)) {
-        reset_game(state, grid);
-      } else if (mouse_on_button(state->pause_button, state->mouse_pos_x, state->mouse_pos_y)) {
-        toggle_pause(state);
-      } else if (mouse_on_button(state->conway_button, state->mouse_pos_x, state->mouse_pos_y)) {
-        if (state->current_rule != CONWAY) {
+      } else if (state->menu_opened) {
+        if (mouse_on_button(state->reset_button, state)) {
+          reset_game(state, grid);
+        } else if (mouse_on_button(state->pause_button, state)) {
+          toggle_pause(state);
+        } else if (mouse_on_button(state->conway_button, state) && state->current_rule != CONWAY) {
           state->current_rule = CONWAY;
           reset_game(state, grid);
-        }
-      } else if (mouse_on_button(state->primordia_button, state->mouse_pos_x, state->mouse_pos_y)) {
-        if (state->current_rule != PRIMORDIA) {
+        } else if (mouse_on_button(state->primordia_button, state) && state->current_rule != PRIMORDIA) {
           state->current_rule = PRIMORDIA;
           reset_game(state, grid);
-        }
-      } else if (mouse_on_button(state->lenia_button, state->mouse_pos_x, state->mouse_pos_y)) {
-        if (state->current_rule != LENIA) {
+        } else if (mouse_on_button(state->lenia_button, state) && state->current_rule != LENIA) {
           state->current_rule = LENIA;
           reset_game(state, grid);
+        } else {
+          state->holding_left_mouse = TRUE;
         }
       } else {
         state->holding_left_mouse = TRUE;
@@ -76,7 +74,9 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
 
   if (event->type == SDL_MOUSEBUTTONUP) {
     if (event->button.button == SDL_BUTTON_LEFT) {
-      grid[event->button.x/SCALE][event->button.y/SCALE] = 1;
+      if ((state->menu_opened && event->button.x > MENU_WIDTH) || !state->menu_opened) {
+        grid[event->button.x/SCALE][event->button.y/SCALE] = 1;
+      }
     }
     state->holding_left_mouse = FALSE;
     return;
@@ -104,6 +104,7 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
         open_menu(state);
       } else {
         state->menu_opened = FALSE;
+        state->menu_pos_x = -MENU_WIDTH;
       }
     }
   }

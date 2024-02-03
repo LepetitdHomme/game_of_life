@@ -13,13 +13,7 @@ void init_primordia(float (*grid)[GRID_H]) {
   }
 }
 
-float growth_primordia(float X) {
-  static float growth[] = { -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
-
-  return growth[(int)(X)];
-}
-
-int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
+int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], float *growth_primordia){
   int i,j;
   int cells_count = 0;
   float max = 1.0;
@@ -36,7 +30,7 @@ int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
         }
       }
 
-      result = grid[i][j] + growth_primordia(sum);
+      result = grid[i][j] + growth_primordia[(int)sum];
       grid2[i][j] = fmin(fmax(result, min), max);
 
       if (grid2[i][j] > 0.0) {

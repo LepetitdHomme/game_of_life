@@ -37,15 +37,15 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
 
 	/* display all rules */
 	// button conway
-	render_quad->x = state->menu_pos_x + 5;
-  render_quad->y += 60;
+	render_quad->x = state->menu_pos_x + 20;
+  render_quad->y += 50;
 	char conway[] = "Conway";
   render_quad->w = strlen(conway) * VISIBLE_TEXT_SIZE;
   if (state->current_rule != CONWAY) {
   	update_color(&color, 127, 127, 127);
   }
   render_text(renderer, menu, conway, render_quad, color);
-  SDL_Rect rect_conway = { render_quad->x - 5, render_quad->y - 10, render_quad->w + 10, render_quad->h + 20 };
+  SDL_Rect rect_conway = { render_quad->x - 10, render_quad->y - 10, MENU_WIDTH / 2 - 20, render_quad->h + 20 };
   state->conway_button.x = rect_conway.x;
   state->conway_button.y = rect_conway.y;
   state->conway_button.w = rect_conway.w;
@@ -56,7 +56,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   }
 
 	// button primordia
-	render_quad->x = rect_conway.x + rect_conway.w + 5;
+	render_quad->x = state->menu_pos_x + MENU_WIDTH / 2 + 10;
   char primordia[] = "Primordia";
   render_quad->w = strlen(primordia) * VISIBLE_TEXT_SIZE;
   if (state->current_rule == PRIMORDIA) {
@@ -65,7 +65,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   	update_color(&color, 127, 127, 127);
   }
   render_text(renderer, menu, primordia, render_quad, color);
-  SDL_Rect rect_primordia = { render_quad->x - 5, render_quad->y - 10, render_quad->w + 10, render_quad->h + 20};
+  SDL_Rect rect_primordia = { render_quad->x - 10, render_quad->y - 10, MENU_WIDTH / 2 - 10, render_quad->h + 20 };
   state->primordia_button.x = rect_primordia.x;
   state->primordia_button.y = rect_primordia.y;
   state->primordia_button.w = rect_primordia.w;
@@ -75,8 +75,11 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   	SDL_RenderDrawRect(renderer, &rect_primordia);
   }
 
+  // next line
+
   // button lenia
-	render_quad->x = rect_primordia.x + rect_primordia.w + 5;
+  render_quad->y += 40;
+	render_quad->x = state->menu_pos_x + 20;
   char lenia[] = "Lenia";
   render_quad->w = strlen(lenia) * VISIBLE_TEXT_SIZE;
   if (state->current_rule == LENIA) {
@@ -85,7 +88,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   	update_color(&color, 127, 127, 127);
   }
   render_text(renderer, menu, lenia, render_quad, color);
-  SDL_Rect rect_lenia = { render_quad->x - 5, render_quad->y - 10, render_quad->w + 10, render_quad->h + 20 };
+  SDL_Rect rect_lenia = { render_quad->x - 10, render_quad->y - 10, MENU_WIDTH / 2 - 20, render_quad->h + 20 };
   state->lenia_button.x = rect_lenia.x;
   state->lenia_button.y = rect_lenia.y;
   state->lenia_button.w = rect_lenia.w;
@@ -99,11 +102,8 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
 /* TODO: Lacks dynamism */
 /* Behold fool ! leave at the door any convention expectation you may have */
 void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
-	/* animate menu */
 	if (state->menu_opened == TRUE && state->menu_pos_x < 0) {
-		state->menu_pos_x += MENU_ANIMATION_SPEED;
-	} else if (state->menu_opened == FALSE && state->menu_pos_x > -MENU_WIDTH) {
-		state->menu_pos_x -= MENU_ANIMATION_SPEED;
+		state->menu_pos_x = 0;
 	}
 
 	/* Menu not displayed => display the display menu button */
@@ -116,11 +116,15 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
 	/** Menu display **/
 	
 	/* background */
-	// SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // activates alpha blending for transparency
-	SDL_SetRenderDrawColor(renderer, 32, 32, 32, 200);
+	if (state->current_rule == CONWAY) {
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // activates alpha blending for transparency
+	}
+	SDL_SetRenderDrawColor(renderer, 32, 32, 32, 216);
   SDL_Rect menuRect = { state->menu_pos_x, 0, MENU_WIDTH, WINDOW_HEIGHT };
   SDL_RenderFillRect(renderer, &menuRect);
-	// SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE); // deactivates alpha blending
+	if (state->current_rule == CONWAY) {
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE); // deactivates alpha blending
+	}
 	SDL_Color color = { 255, 255, 255 };
 
 	/* display title */
@@ -213,4 +217,7 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
 
   /* display RULE */
   draw_rule_button(renderer, menu, state, &render_quad);
+  if (state->current_rule == PRIMORDIA) {
+  	draw_primordia(renderer, menu, state, &render_quad);
+  }
 }

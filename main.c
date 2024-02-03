@@ -21,6 +21,10 @@ void init_game_state(state_t *state) {
   state->pause_button.y = state->pause_button.x / 2;
   state->pause_button.w = state->pause_button.x;
   state->pause_button.h = state->pause_button.x;
+  float values[] = { -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
+  for (int i = 0; i < NUM_GROWTH_PRIMORDIA; i++) {
+    state->growth_primordia[i] = values[i];
+  }
   state->quit = FALSE;
   state->mouse_pos_x = 0;
   state->mouse_pos_y = 0;
@@ -85,7 +89,7 @@ int main() {
               state.cells_count = next_cycle(grid, grid2);
               break;
             case PRIMORDIA:
-              state.cells_count = next_cycle_primordia(grid, grid2);
+              state.cells_count = next_cycle_primordia(grid, grid2, state.growth_primordia);
               break;
             case LENIA:
               state.cells_count = next_cycle_lenia(grid, grid2);
@@ -101,7 +105,7 @@ int main() {
               state.cells_count = next_cycle(grid2, grid);
               break;
             case PRIMORDIA:
-              state.cells_count = next_cycle_primordia(grid2, grid);
+              state.cells_count = next_cycle_primordia(grid2, grid, state.growth_primordia);
               break;
             case LENIA:
               state.cells_count = next_cycle_lenia(grid2, grid);

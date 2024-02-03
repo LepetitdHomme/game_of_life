@@ -23,6 +23,7 @@
 
 #define LENIA_THRESHOLD 10.0
 #define KERNEL_SIZE 3
+#define NUM_GROWTH_PRIMORDIA 10
 
 #define TRUE 1
 #define FALSE 0
@@ -57,6 +58,7 @@ typedef struct {
 	SDL_Rect 	conway_button;
 	SDL_Rect 	primordia_button;
 	SDL_Rect 	lenia_button;
+	float 		growth_primordia[NUM_GROWTH_PRIMORDIA];
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
@@ -82,6 +84,9 @@ void 		free_menu(menu_t *menu);
 void 		open_menu(state_t *state);
 void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 
+/* 			menu_primordia */
+void 		draw_primordia(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *render_quad);
+
 /* 			events */
 void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
 
@@ -90,7 +95,7 @@ int 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
 
 /* 			primordia */
 void 		init_primordia(float (*grid)[GRID_H]);
-int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], float *growth_primordia);
 
 /* 			lenia */
 void 		init_lenia(float (*grid)[GRID_H]);
