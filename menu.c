@@ -1,13 +1,5 @@
 #include "includes/common.h"
 
-void init_menu(sdl_t *sdl, menu_t *menu) {
-	menu->font = TTF_OpenFont("assets/metropolis.regular.otf", 50); // not really readable under 50 ?
-  if (menu->font == NULL) {
-    printf("Failed to open font ! SDL_ttf error: %s\n", TTF_GetError());
-    exit(EXIT_FAILURE);
-  }
-}
-
 void free_menu(menu_t *menu) {
 	TTF_CloseFont(menu->font);
 }
@@ -51,7 +43,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   state->conway_button.w = rect_conway.w;
   state->conway_button.h = rect_conway.h;
   if (state->current_rule == CONWAY) {
-  	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   	SDL_RenderDrawRect(renderer, &rect_conway);
   }
 
@@ -71,7 +63,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   state->primordia_button.w = rect_primordia.w;
   state->primordia_button.h = rect_primordia.h;
   if (state->current_rule == PRIMORDIA) {
-  	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   	SDL_RenderDrawRect(renderer, &rect_primordia);
   }
 
@@ -94,7 +86,7 @@ void draw_rule_button(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_
   state->lenia_button.w = rect_lenia.w;
   state->lenia_button.h = rect_lenia.h;
   if (state->current_rule == LENIA) {
-  	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   	SDL_RenderDrawRect(renderer, &rect_lenia);
   }
 }
@@ -193,7 +185,7 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
   state->reset_button.y = rect_reset.y;
   state->reset_button.w = rect_reset.w;
   state->reset_button.h = rect_reset.h;
-  SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderDrawRect(renderer, &rect_reset);
 
   /* display Pause button */
@@ -212,12 +204,14 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
   state->pause_button.y = rect_pause.y;
   state->pause_button.w = rect_pause.w;
   state->pause_button.h = rect_pause.h;
-  SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderDrawRect(renderer, &rect_pause);
 
   /* display RULE */
   draw_rule_button(renderer, menu, state, &render_quad);
-  if (state->current_rule == PRIMORDIA) {
+  if (state->current_rule == CONWAY) {
+  	draw_conway_menu(renderer, menu, state, &render_quad);
+  } else if (state->current_rule == PRIMORDIA) {
 		draw_primordia_menu(renderer, menu, state, &render_quad);
   }
 }

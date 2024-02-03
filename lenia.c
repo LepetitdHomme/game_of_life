@@ -5,19 +5,6 @@
 ** 1 / (sigma * sqrt(2 * M_PI)) * exp(-0.5 * pow((x - mu) / sigma, 2))
 */
 
-
-void init_lenia(float (*grid)[GRID_H]) {
-  int i,j;
-  for(i = 0 ; i < GRID_W ; i++) {
-    for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = random_float(0.0, 1.0);
-      if (grid[i][j] <= 0.8) { // play with this
-        grid[i][j] = 0.0;
-      }
-    }
-  }
-}
-
 void display_gauss(SDL_Renderer *renderer) {
 	int i;
 	double j;

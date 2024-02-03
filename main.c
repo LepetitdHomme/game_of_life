@@ -1,66 +1,11 @@
 #include "includes/common.h"
 
-void init_game_state(state_t *state) {
-  state->current_grid = 0; // switch between 2 grids for computing next cycle without erasing current values
-  state->current_rule = CONWAY; // ENUM
-  state->cycle_running = FALSE; // will next cycle be computed and displayed ?
-  state->cycle_count = 0;
-  state->cells_count = 0;
-  state->holding_left_mouse = FALSE; // used to draw ; make cells alive
-  state->menu_opened = FALSE;
-  state->menu_pos_x = -MENU_WIDTH; // basically -MENU_WIDTH or 0 (x screen coord);
-  // the button up left that opens the menu
-  state->menu_button.x = MENU_WIDTH / 10;
-  state->menu_button.y = MENU_WIDTH / 10;
-  state->menu_button.w = state->menu_button.x;
-  state->menu_button.h = state->menu_button.x;
-  // menu button that resets current grid with current rule
-  state->reset_button.x = MENU_WIDTH * 20 / 100;
-  state->reset_button.y = state->reset_button.x / 2;
-  state->reset_button.w = state->reset_button.x;
-  state->reset_button.h = state->reset_button.x;
-  // menu button to pause cycles
-  state->pause_button.x = MENU_WIDTH * 20 / 100;
-  state->pause_button.y = state->pause_button.x / 2;
-  state->pause_button.w = state->pause_button.x;
-  state->pause_button.h = state->pause_button.x;
-  // initial growth function for primordia rule
-  float values[] = { -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
-  for (int i = 0; i < NUM_GROWTH_PRIMORDIA; i++) {
-    state->growth_primordia[i] = values[i];
-    for (int j = 0; j < 3 ; j++) {
-      state->primordia_graph_buttons[i][j].x = 0;
-      state->primordia_graph_buttons[i][j].y = 0;
-      state->primordia_graph_buttons[i][j].w = 0;
-      state->primordia_graph_buttons[i][j].h = 0;
-    }
-  }
-  //
-  state->quit = FALSE; // quits program if true
-  state->mouse_pos_x = 0;
-  state->mouse_pos_y = 0;
-}
-
-void init_sdl(sdl_t *sdl) {
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    printf("SDL initialization failed: %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
-  sdl->window = SDL_CreateWindow("Game of life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-  if (sdl->window == NULL) {
-    printf("Window creation failed: %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
-  sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_ACCELERATED);
-  if (sdl->renderer == NULL) {
-    printf("Renderer creation failed: %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
-  if (TTF_Init() == -1) {
-    printf("SDL_ttf could not init ! %s\n", TTF_GetError());
-    exit(EXIT_FAILURE);
-  }
-}
+/* TODO
+** Need to initialize the menu beforehand, right now everything - place - is recomputed everytime, this is ridiculous
+** Factorize display of graphs
+** Primordia graph buttons are slow on reset + pause, why ?
+** 
+*/
 
 int main() {
   srand(time(NULL));
@@ -96,33 +41,27 @@ int main() {
         state.cycle_count++;
         if (state.current_grid == 0) {
           switch (state.current_rule) {
-            case CONWAY:
-              state.cells_count = next_cycle(grid, grid2);
-              break;
             case PRIMORDIA:
-              state.cells_count = next_cycle_primordia(grid, grid2, state.growth_primordia);
+              state.cells_count = next_cycle_primordia(grid, grid2, &state);
               break;
             case LENIA:
               state.cells_count = next_cycle_lenia(grid, grid2);
               break;
             default:
-              state.cells_count = next_cycle(grid, grid2);
+              state.cells_count = next_cycle(grid, grid2, &state);
           }
           reinitialize_grid(grid);
           state.current_grid = 1;
         } else {
           switch (state.current_rule) {
-            case CONWAY:
-              state.cells_count = next_cycle(grid2, grid);
-              break;
             case PRIMORDIA:
-              state.cells_count = next_cycle_primordia(grid2, grid, state.growth_primordia);
+              state.cells_count = next_cycle_primordia(grid2, grid, &state);
               break;
             case LENIA:
               state.cells_count = next_cycle_lenia(grid2, grid);
               break;
             default:
-              state.cells_count = next_cycle(grid2, grid);
+              state.cells_count = next_cycle(grid2, grid, &state);
           }
           reinitialize_grid(grid2);
           state.current_grid = 0;
@@ -136,7 +75,7 @@ int main() {
     // display_gauss(renderer);
 
     SDL_RenderPresent(sdl.renderer);
-    SDL_Delay(16);
+    SDL_Delay(8);
   }
 
   /*********** SDL FREE/QUIT ************/

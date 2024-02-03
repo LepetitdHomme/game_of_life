@@ -1,15 +1,5 @@
 #include "includes/common.h"
 
-// avoidable
-void reinitialize_grid(float (*grid)[GRID_H]) {
-  int i,j;
-  for(i = 0 ; i < GRID_W ; i++) {
-    for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = 0.0;
-    }
-  }
-}
-
 void map_life_to_color(float life, Uint8 *r, Uint8 *g, Uint8 *b) {
   // Define the color gradient ranges
   Uint8 blue_min = 0;

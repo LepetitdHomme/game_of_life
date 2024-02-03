@@ -9,11 +9,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h> 
 
-// #define RAND_MAX_FLOAT ((float)RAND_MAX + 1.0)
-#define WINDOW_WIDTH 1280
+#define WINDOW_WIDTH 1280 // >= 1000 for menu !!
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
 #define SCALE 4
-#define CYCLE_INTERVAL 0.1 // in seconds ; at which interval the next cycle of life is triggered
+#define CYCLE_INTERVAL 0.05 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
 
@@ -24,6 +23,7 @@
 #define LENIA_THRESHOLD 10.0
 #define KERNEL_SIZE 3
 #define NUM_GROWTH_PRIMORDIA 10
+#define NUM_GROWTH_CONWAY 9
 
 #define TRUE 1
 #define FALSE 0
@@ -60,12 +60,48 @@ typedef struct {
 	SDL_Rect 	lenia_button;
 	float 		growth_primordia[NUM_GROWTH_PRIMORDIA];
 	SDL_Rect 	primordia_graph_buttons[NUM_GROWTH_PRIMORDIA][3];
+  int       survive_conway[NUM_GROWTH_CONWAY];
+  int       born_conway[NUM_GROWTH_CONWAY];
+  SDL_Rect  survive_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
+  SDL_Rect  born_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
 	Uint32 		current_time;
 	enum Rule current_rule;
 } state_t;
+
+/*      initialization */
+void    init_game_state(state_t *state);
+void    init_sdl(sdl_t *sdl);
+void 		init_menu(sdl_t *sdl, menu_t *menu);
+void    init_conway_growth(state_t *state);
+void 		init_primordia(float (*grid)[GRID_H]);
+void    init_primordia_growth(state_t *state);
+void 		init_lenia(float (*grid)[GRID_H]);
+void 		reinitialize_grid(float (*grid)[GRID_H]);
+
+/* 			grid */
+void 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
+int 		is_in_grid(int x, int y);
+
+/* 			events */
+int 		mouse_on_button(SDL_Rect button, state_t *state);
+void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
+
+/* 			conway */
+int     *get_conway_survive();
+int     *get_conway_born();
+int 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state);
+
+/* 			primordia */
+float   *get_primordia_growth();
+int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state);
+
+/* 			lenia */
+int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+double 	gaussian(int type, int x);
+void 		display_gauss(SDL_Renderer *renderer);
 
 /* 			compute */
 float 	gaussianKernel(int i, int j);
@@ -74,36 +110,19 @@ float 	vonNeumannKernel(int i, int j);
 float 	mooreKernel(int i, int j);
 float 	random_float(float lower_bound, float upper_bound);
 
-/* 			grid */
-void 		reinitialize_grid(float (*grid)[GRID_H]);
-void 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
-int 		is_in_grid(int x, int y);
-
 /* 			menu */
-void 		init_menu(sdl_t *sdl, menu_t *menu);
 void 		free_menu(menu_t *menu);
 void 		open_menu(state_t *state);
+void    render_text(SDL_Renderer *renderer, menu_t *menu, char *text, SDL_Rect *rect, SDL_Color color);
 void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 
 /* 			menu_primordia */
 int 		update_primordia_graph(state_t *state);
 void 		draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *render_quad);
 
-/* 			events */
-int 		mouse_on_button(SDL_Rect button, state_t *state);
-void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
-
-/* 			conway */
-int 		next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
-
-/* 			primordia */
-void 		init_primordia(float (*grid)[GRID_H]);
-int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], float *growth_primordia);
-
-/* 			lenia */
-void 		init_lenia(float (*grid)[GRID_H]);
-int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
-double 	gaussian(int type, int x);
-void 		display_gauss(SDL_Renderer *renderer);
+/*      menu_conway */
+int     update_conway_graph(state_t *state);
+void    draw_conway_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *quad);
+// int     update_conway_graph(state_t *state);
 
 #endif

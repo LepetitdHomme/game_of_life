@@ -1,19 +1,13 @@
 #include "includes/common.h"
 
-void init_primordia(float (*grid)[GRID_H]) {
-  int i,j;
+/* uses NUM_GROWTH_PRIMORDIA */
+float * get_primordia_growth() {
+  static float values[] = { -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
 
-  for(i = 0 ; i < GRID_W ; i++) {
-    for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = random_float(0.0, 1.0);
-      // if (grid[i][j] <= 0.8) { // play with this
-      //   grid[i][j] = 0.0;
-      // }
-    }
-  }
+  return values;
 }
 
-int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], float *growth_primordia){
+int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state){
   int i,j;
   int cells_count = 0;
   float max = 1.0;
@@ -30,7 +24,7 @@ int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], float *g
         }
       }
 
-      result = grid[i][j] + growth_primordia[(int)sum];
+      result = grid[i][j] + state->growth_primordia[(int)sum];
       grid2[i][j] = fmin(fmax(result, min), max);
 
       if (grid2[i][j] > 0.0) {

@@ -16,7 +16,13 @@ CC=gcc
 CFLAGS=-I/includes
 LDFLAGS = -lm `sdl2-config --cflags --libs` -lSDL2_ttf
 DEPS = common.h
-OBJ = main.o grid.o events.o menu.o menu_primordia.o conway.o lenia.o primordia.o compute.o
+OBJ = main.o \
+	initialization.o \
+	grid.o \
+	events.o \
+	compute.o \
+	menu.o menu_primordia.o menu_conway.o \
+	conway.o lenia.o primordia.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

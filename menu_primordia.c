@@ -49,6 +49,7 @@ void    draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state
   render_quad->w = MENU_WIDTH - 10;
   render_quad->h = 60;
   int i,j,c,d,tmp_i,tmp_j,e;
+  SDL_Rect point;
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderFillRect(renderer, render_quad);
@@ -71,11 +72,12 @@ void    draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state
     tmp_j = j;
 
     // Draw thick point
+    // Draw thick point
+    point.x = i - 2;
+    point.y = j - 2;
+    point.w = 5;
+    point.h = 5;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    for (int c = i - 2; c < i + 2 ; c++) {
-      for (int d = j - 2 ; d < j + 2 ; d++) {
-        SDL_RenderDrawPoint(renderer, c, d);
-      }
-    }
+    SDL_RenderFillRect(renderer, &point);
   }
 }

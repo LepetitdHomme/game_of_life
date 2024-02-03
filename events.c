@@ -14,12 +14,14 @@ void reset_game(state_t *state, float (*grid)[GRID_H]) {
   switch (state->current_rule) {
     case PRIMORDIA:
       init_primordia(grid);
+      init_primordia_growth(state);
       break;
     case LENIA:
       init_lenia(grid);
       break;
     default:
       reinitialize_grid(grid);
+      init_conway_growth(state);
   }
   state->cycle_running = 0;
   state->cycle_count = 0;
@@ -63,6 +65,8 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
           state->current_rule = LENIA;
           reset_game(state, grid);
         } else if (state->current_rule == PRIMORDIA && update_primordia_graph(state)) {
+          // do nothing ?
+        } else if (state->current_rule == CONWAY && update_conway_graph(state)) {
           // do nothing ?
         } else {
           state->holding_left_mouse = TRUE;
