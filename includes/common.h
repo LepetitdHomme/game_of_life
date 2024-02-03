@@ -59,6 +59,7 @@ typedef struct {
 	SDL_Rect 	primordia_button;
 	SDL_Rect 	lenia_button;
 	float 		growth_primordia[NUM_GROWTH_PRIMORDIA];
+	SDL_Rect 	primordia_graph_buttons[NUM_GROWTH_PRIMORDIA][3];
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
@@ -85,9 +86,11 @@ void 		open_menu(state_t *state);
 void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 
 /* 			menu_primordia */
-void 		draw_primordia(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *render_quad);
+int 		update_primordia_graph(state_t *state);
+void 		draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *render_quad);
 
 /* 			events */
+int 		mouse_on_button(SDL_Rect button, state_t *state);
 void 		handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event);
 
 /* 			conway */

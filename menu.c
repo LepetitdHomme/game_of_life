@@ -218,6 +218,6 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
   /* display RULE */
   draw_rule_button(renderer, menu, state, &render_quad);
   if (state->current_rule == PRIMORDIA) {
-  	draw_primordia(renderer, menu, state, &render_quad);
+		draw_primordia_menu(renderer, menu, state, &render_quad);
   }
 }

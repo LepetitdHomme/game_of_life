@@ -62,6 +62,8 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
         } else if (mouse_on_button(state->lenia_button, state) && state->current_rule != LENIA) {
           state->current_rule = LENIA;
           reset_game(state, grid);
+        } else if (state->current_rule == PRIMORDIA && update_primordia_graph(state)) {
+          // do nothing ?
         } else {
           state->holding_left_mouse = TRUE;
         }
