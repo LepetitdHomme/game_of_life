@@ -12,7 +12,7 @@
 // #define RAND_MAX_FLOAT ((float)RAND_MAX + 1.0)
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
-#define SCALE 2
+#define SCALE 4
 #define CYCLE_INTERVAL 0.1 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
@@ -64,12 +64,14 @@ typedef struct {
 	enum Rule current_rule;
 } state_t;
 
-/* 			grid */
+/* 			compute */
 float 	gaussianKernel(int i, int j);
 float 	conwayKernel(int i, int j);
 float 	vonNeumannKernel(int i, int j);
 float 	mooreKernel(int i, int j);
 float 	random_float(float lower_bound, float upper_bound);
+
+/* 			grid */
 void 		reinitialize_grid(float (*grid)[GRID_H]);
 void 		draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]);
 int 		is_in_grid(int x, int y);

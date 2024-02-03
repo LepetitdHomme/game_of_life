@@ -1,62 +1,6 @@
 #include "includes/common.h"
 
-float gaussianKernel(int i, int j) {
-  // Define discrete Gaussian kernel (example)
-  static float gaussianKernel[KERNEL_SIZE][KERNEL_SIZE] = {
-    {0.075, 0.125, 0.075},
-    {0.125, 0.200, 0.125},
-    {0.075, 0.125, 0.075}
-  };
-
-  return gaussianKernel[i][j];
-}
-
-float vonNeumannKernel(int i, int j) {
-  // Define discrete Von Neumann kernel
-  static float vonNeumannKernel[KERNEL_SIZE][KERNEL_SIZE] = {
-    {0, 1, 0},
-    {1, 1, 1},
-    {0, 1, 0}
-  };
-
-  return vonNeumannKernel[i][j];
-}
-
-float mooreKernel(int i, int j) {
-  // Define discrete Moore kernel
-  static float mooreKernel[KERNEL_SIZE][KERNEL_SIZE] = {
-    {1, 1, 1},
-    {1, 1, 1},
-    {1, 1, 1}
-  };
-
-  return mooreKernel[i][j];
-}
-
-float conwayKernel(int i, int j) {
-  // Define discrete Moore kernel
-  static float conwayKernel[KERNEL_SIZE][KERNEL_SIZE] = {
-    {1, 1, 1},
-    {1, 0, 1},
-    {1, 1, 1}
-  };
-
-  return conwayKernel[i][j];
-}
-
-float random_float(float lower_bound, float upper_bound) {
-    // Generate a random integer between 0 and RAND_MAX
-    int random_int = rand();
-
-    // Scale and shift the random integer to the range [0, 1]
-    float scaled_random = (float)random_int / RAND_MAX;
-
-    // Scale and shift the random float to the specified range [lower_bound, upper_bound]
-    float random_float = (upper_bound - lower_bound) * scaled_random + lower_bound;
-
-    return random_float;
-}
-
+// avoidable
 void reinitialize_grid(float (*grid)[GRID_H]) {
   int i,j;
   for(i = 0 ; i < GRID_W ; i++) {
@@ -67,13 +11,23 @@ void reinitialize_grid(float (*grid)[GRID_H]) {
 }
 
 void map_life_to_color(float life, Uint8 *r, Uint8 *g, Uint8 *b) {
-  // Define the color gradient range (e.g., from blue to red)
-  Uint8 min_color = 0;
-  Uint8 max_color = 255;
+  // Define the color gradient ranges
+  Uint8 blue_min = 0;
+  Uint8 blue_max = 255;
+  Uint8 yellow_min = 0;
+  Uint8 yellow_max = 255;
 
-  *b = 0;//(Uint8)((1.0 - life) * max_color + life * min_color);
-  *g = (Uint8)((1.0 - life) * min_color + life * max_color);
-  *r = (Uint8)((1.0 - life) * min_color + life * max_color);
+  if (life < 0.7) {
+    // If life is less than 0.7, interpolate from blue to yellow
+    *r = (Uint8)((life / 0.7) * blue_max + ((0.7 - life) / 0.7) * yellow_max);
+    *g = (Uint8)((life / 0.7) * blue_max + ((0.7 - life) / 0.7) * yellow_max);
+    *b = (Uint8)((life / 0.7) * blue_max + ((0.7 - life) / 0.7) * yellow_min);
+  } else {
+    // If life is greater than or equal to 0.7, set to full yellow
+    *r = yellow_max;
+    *g = yellow_max;
+    *b = yellow_min;
+  }
 }
 
 void draw_current_grid(SDL_Renderer *renderer, float grid[GRID_W][GRID_H]) {
