@@ -1659,64 +1659,36 @@ double gaussian(int type, int x) {
 		-0.99971,
 		-0.999722
 	};
-	static double gauss2[8] = {
-		-1.0, 0.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0
-	};
+
 	if (type == 0)
 		return gauss[x];
 	if (type == 1)
 		return gauss1[(int)x];
-	if (type == 2)
-		return gauss2[(int)x];
 }
 
-int next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]){
-	int i,j;
+int next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state){
 	int cells_count = 0;
-	int floored_sum;
+	int radius = state->kernel_lenia.radius;
+	int diameter = radius * 2;
 
-	for(i = 0; i < GRID_W ; i++) {
-		for(j = 0 ; j < GRID_H ; j++) {
-			float sum = 0.0;
-			if(is_in_grid(i-1, j-1) && grid[i-1][j-1] > 0.0){
-				sum += grid[i-1][j-1];
-			}
-			if(is_in_grid(i, j-1) && grid[i][j-1] > 0.0){
-				sum += grid[i][j-1];
-			}
-			if(is_in_grid(i+1,j-1) && grid[i+1][j-1] > 0.0){
-				sum += grid[i+1][j-1];
-			}
-			if(is_in_grid(i-1, j) && grid[i-1][j] > 0.0){
-				sum += grid[i-1][j];
-			}
-			/** Lenia takes into account the current cell ! **/
-			sum += grid[i][j];
-			/*************************************************/
-			if(is_in_grid(i+1,j) && grid[i+1][j] > 0.0){
-				sum += grid[i+1][j];
-			}
-			if(is_in_grid(i-1,j+1) && grid[i-1][j+1] > 0.0){
-				sum += grid[i-1][j+1];
-			}
-			if(is_in_grid(i,j+1) && grid[i][j+1] > 0.0){
-				sum += grid[i][j+1];
-			}
-			if(is_in_grid(i+1,j+1) && grid[i+1][j+1] > 0.0){
-				sum += grid[i+1][j+1];
-			}
+  // Convolution with the kernel
+  for (int x = radius; x < GRID_W - radius; x++) {
+    for (int y = radius; y < GRID_H - radius; y++) {
+      float sum = 0.0;
 
-			if (sum < LENIA_THRESHOLD) {
-				floored_sum = floor(sum * 100);
-				if (floored_sum >= 0 && floored_sum < 801) {
-					grid2[i][j] = grid[i][j] + gaussian(0, floor(sum * 100));
-				}
-			}
-			if (grid2[i][j] > 0.0) {
+      for (int i = -radius; i < radius; i++) {
+        for (int j = -radius; j < radius; j++) {
+          sum += grid[x + i][y + j] * state->kernel_lenia.data[i + radius][j + radius];
+        }
+	    }
+			// Apply growth rules
+			grid2[x][y] = grid[x][y] + (sum >= 0.12 && sum <= 0.15 ? 0.1 : -0.1);
+			// Ensure the value is within [0, 1]
+			grid2[x][y] = fmin(fmax(grid2[x][y], 0.0), 1.0);
+			if (grid2[x][y] > 0.0) {
 				cells_count++;
 			}
 		}
 	}
-
 	return cells_count;
 }

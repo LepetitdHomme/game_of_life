@@ -45,7 +45,7 @@ int main() {
               state.cells_count = next_cycle_primordia(grid, grid2, &state);
               break;
             case LENIA:
-              state.cells_count = next_cycle_lenia(grid, grid2);
+              state.cells_count = next_cycle_lenia(grid, grid2, &state);
               break;
             default:
               state.cells_count = next_cycle(grid, grid2, &state);
@@ -58,7 +58,7 @@ int main() {
               state.cells_count = next_cycle_primordia(grid2, grid, &state);
               break;
             case LENIA:
-              state.cells_count = next_cycle_lenia(grid2, grid);
+              state.cells_count = next_cycle_lenia(grid2, grid, &state);
               break;
             default:
               state.cells_count = next_cycle(grid2, grid, &state);

@@ -32,6 +32,8 @@ void init_game_state(state_t *state) {
   init_primordia_growth(state);
   init_conway_growth(state);
   init_kernel(state);
+  state->kernel_lenia.data = NULL;
+  init_kernel_lenia(state, 5);
 }
 
 void init_sdl(sdl_t *sdl) {
@@ -91,6 +93,50 @@ void init_kernel(state_t *state) {
   }
 }
 
+void free_kernel(state_t *state) {
+  for (int i = 0; i < state->kernel_lenia.radius * 2 ; i++) {
+    free(state->kernel_lenia.data[i]);
+  }
+  free(state->kernel_lenia.data);
+}
+
+void init_kernel_lenia(state_t *state, int radius) {
+  int diameter = radius * 2;
+  state->kernel_lenia.radius = radius;
+
+  if (state->kernel_lenia.data != NULL) {
+    free_kernel(state);
+  }
+
+  // Allocate memory for the kernel
+  state->kernel_lenia.data = (float **)malloc(diameter * sizeof(float *));
+  for (int i = 0; i < diameter; i++) {
+    state->kernel_lenia.data[i] = (float *)malloc(diameter * sizeof(float));
+  }
+
+  // Fill the kernel with ones and set the center element to zero
+  int center = radius;
+  float sum = 0.0;
+
+  for (int i = 0; i < diameter; i++) {
+    for (int j = 0; j < diameter; j++) {
+      if (i == center && j == center) {
+        state->kernel_lenia.data[i][j] = 0.0;
+      } else {
+        state->kernel_lenia.data[i][j] = 1.0;
+        sum += 1.0;
+      }
+    }
+  }
+
+  // Normalize the kernel
+  for (int i = 0; i < diameter; i++) {
+    for (int j = 0; j < diameter; j++) {
+      state->kernel_lenia.data[i][j] /= sum;
+    }
+  }
+}
+
 void init_conway_growth(state_t *state) {
   int *survive = get_conway_survive();
   int *born = get_conway_born();
@@ -143,12 +189,12 @@ void init_primordia_growth(state_t *state) {
 
 void init_lenia(float (*grid)[GRID_H]) {
   int i,j;
+  float random;
+
   for(i = 0 ; i < GRID_W ; i++) {
     for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = random_float(0.0, 1.0);
-      if (grid[i][j] <= 0.8) { // play with this
-        grid[i][j] = 0.0;
-      }
+      random = 0.0;//random_float(-2.5, 1.0);
+      grid[i][j] = fmin(fmax(random, 0.0), 1.0);
     }
   }
 }

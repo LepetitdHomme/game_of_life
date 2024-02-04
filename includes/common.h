@@ -11,8 +11,8 @@
 
 #define WINDOW_WIDTH 1280 // >= 1000 for menu !!
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
-#define SCALE 4
-#define CYCLE_INTERVAL 0.05 // in seconds ; at which interval the next cycle of life is triggered
+#define SCALE 2
+#define CYCLE_INTERVAL 0.04 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
 
@@ -45,6 +45,11 @@ typedef struct {
 } menu_t;
 
 typedef struct {
+  float   **data;
+  int     radius;
+} kernel_t;
+
+typedef struct {
 	int 			current_grid;
 	int 			cycle_running;
 	int 			cycle_count;
@@ -66,6 +71,7 @@ typedef struct {
   SDL_Rect  born_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
   int       kernel[KERNEL_SIZE][KERNEL_SIZE];
   SDL_Rect  kernel_buttons[KERNEL_SIZE][KERNEL_SIZE];
+  kernel_t  kernel_lenia;
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
@@ -82,6 +88,7 @@ void 		init_primordia(float (*grid)[GRID_H]);
 void    init_primordia_growth(state_t *state);
 void 		init_lenia(float (*grid)[GRID_H]);
 void    init_kernel(state_t *state);
+void    init_kernel_lenia(state_t *state, int radius);
 void 		reinitialize_grid(float (*grid)[GRID_H]);
 
 /* 			grid */
@@ -102,7 +109,7 @@ float   *get_primordia_growth();
 int 		next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state);
 
 /* 			lenia */
-int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
+int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state);
 double 	gaussian(int type, int x);
 void 		display_gauss(SDL_Renderer *renderer);
 

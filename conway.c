@@ -1,5 +1,20 @@
 #include "includes/common.h"
 
+/* CONWAY
+**
+**	Conway rules are simple:
+**		Cycles are discrete, each step we compute the next with 2 rules:
+**		a cell is born if it has 3 alive neighbours
+**		the cell survives if it has 2 or 3 neighbours.
+**		Other rules exist, that you can explore with the graph displayed,
+**		but this one (S23/B3) promotes life in a nice way.
+**
+**		The state of a cell is discrete: 0(dead) or 1(alive)
+**		The space is discrete: the neighbours are squares of the grid
+**		Time is discrete as well: we swap between 2 cycles (grid states) 'in steps'.
+**
+*/
+
 /* uses NUM_GROWTH_CONWAY */
 int * get_conway_survive() {
   static int values[] = { 0, 0, 1, 1, 0, 0, 0, 0, 0 };
