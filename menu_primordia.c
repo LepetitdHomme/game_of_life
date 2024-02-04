@@ -1,12 +1,26 @@
 #include "includes/common.h"
 
 int updating_primordia_graph(state_t *state) {
+  int click_h;
+  float value;
+
   for (int x = 0; x < NUM_GROWTH_PRIMORDIA ; x++) {
-    for (int y = 0 ; y < 3 ; y++) {
-      if (mouse_on_button(state->primordia_graph_buttons[x][y], state)) {
-        state->growth_primordia[x] = 1.0 - y; // 1.0 ; 0.0 ; -1.0
-        return 1;
+    if (mouse_on_button(state->primordia_graph_buttons[x], state)) {
+      value = state->primordia_graph_buttons[x].y + state->primordia_graph_buttons[x].h / 2 - state->mouse_pos_y;
+      value = (float)value / ((float)state->primordia_graph_buttons[x].h / 2.0);
+
+      // facilitates graph click
+      if (value <= -0.8) {
+        value = -1.0;
+      } else if (value >= -0.2 && value <= 0.2) {
+        value = 0.0;
+      } else if (value >= 0.8) {
+        value = 1.0;
       }
+      //
+
+      state->growth_primordia[x] = value;
+      return 1;
     }
   }
   return 0;
@@ -14,32 +28,19 @@ int updating_primordia_graph(state_t *state) {
 
 /* Values of growth are -1.0, 0.0 or 1.0 => top y of quad, middle or bottom => to screen y coord */
 int growth_to_quad_to_y(float growth, SDL_Rect quad) {
-  int y;
-
-  if (growth < 0.0) {
-    y = quad.y + quad.h;
-  } else if (growth == 0.0) {
-    y = quad.y + quad.h / 2;
-  } else {
-    y = quad.y;
-  }
-
-  return y;
+  return quad.y + quad.h / 2.0 - (growth * (float)quad.h / 2.0);
 }
 
 void    update_primordia_buttons(SDL_Renderer *renderer, state_t *state, SDL_Rect *render_quad) {
   int step_x = render_quad->w / NUM_GROWTH_PRIMORDIA;
-  int step_y = render_quad->h / 3;
 
   SDL_SetRenderDrawColor(renderer, 16, 16, 16, 255);
   for (int x = 0; x < NUM_GROWTH_PRIMORDIA; x++) {
-    for (int y = 0; y < 3; y++) {
-      state->primordia_graph_buttons[x][y].x = render_quad->x + x * step_x;
-      state->primordia_graph_buttons[x][y].y = render_quad->y + (y * step_y);
-      state->primordia_graph_buttons[x][y].w = step_x;
-      state->primordia_graph_buttons[x][y].h = step_y;
-      SDL_RenderDrawRect(renderer, &state->primordia_graph_buttons[x][y]);
-    }
+    state->primordia_graph_buttons[x].x = render_quad->x + x * step_x;
+    state->primordia_graph_buttons[x].y = render_quad->y;
+    state->primordia_graph_buttons[x].w = step_x;
+    state->primordia_graph_buttons[x].h = render_quad->h;
+    SDL_RenderDrawRect(renderer, &state->primordia_graph_buttons[x]);
   }
 }
 
@@ -54,7 +55,7 @@ void    draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state
   SDL_Color color = { 255, 255, 255 };
 
   // text
-  char growth_text[] = "Growth(-1.0|0.0|1.0)";
+  char growth_text[] = "Growth[-1.0,1.0]";
   text.x = state->menu_pos_x + 5;
   text.y = render_quad->y;
   text.w = MENU_WIDTH - 10;
@@ -73,7 +74,7 @@ void    draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state
   // display legend ?
 
   int step = render_quad->w / NUM_GROWTH_PRIMORDIA;
-  int step_y = render_quad->h / 3;
+
   for (int x = 0 ; x < NUM_GROWTH_PRIMORDIA ; x++) {
     i = render_quad->x + (x * step);
     j = growth_to_quad_to_y(state->growth_primordia[x], *render_quad);

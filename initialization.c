@@ -130,12 +130,10 @@ void init_primordia_growth(state_t *state) {
   if (values != NULL) {
     for (int i = 0; i < NUM_GROWTH_PRIMORDIA; i++) {
       state->growth_primordia[i] = values[i];
-      for (int j = 0; j < 3 ; j++) {
-        state->primordia_graph_buttons[i][j].x = 0;
-        state->primordia_graph_buttons[i][j].y = 0;
-        state->primordia_graph_buttons[i][j].w = 0;
-        state->primordia_graph_buttons[i][j].h = 0;
-      }
+      state->primordia_graph_buttons[i].x = 0;
+      state->primordia_graph_buttons[i].y = 0;
+      state->primordia_graph_buttons[i].w = 0;
+      state->primordia_graph_buttons[i].h = 0;
     }
   } else {
     printf("Initialization Failed at primordia rule init; exiting.\n");

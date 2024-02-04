@@ -59,7 +59,7 @@ typedef struct {
 	SDL_Rect 	primordia_button;
 	SDL_Rect 	lenia_button;
 	float 		growth_primordia[NUM_GROWTH_PRIMORDIA];
-	SDL_Rect 	primordia_graph_buttons[NUM_GROWTH_PRIMORDIA][3];
+	SDL_Rect 	primordia_graph_buttons[NUM_GROWTH_PRIMORDIA];
   int       survive_conway[NUM_GROWTH_CONWAY];
   int       born_conway[NUM_GROWTH_CONWAY];
   SDL_Rect  survive_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
