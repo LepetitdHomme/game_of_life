@@ -50,7 +50,22 @@ void    draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state
   render_quad->h = 60;
   int i,j,c,d,tmp_i,tmp_j,e;
   SDL_Rect point;
+  SDL_Rect text;
+  SDL_Color color = { 255, 255, 255 };
 
+  // text
+  char growth_text[] = "Growth(-1.0|0.0|1.0)";
+  text.x = state->menu_pos_x + 5;
+  text.y = render_quad->y;
+  text.w = MENU_WIDTH - 10;
+  text.h = 20;
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderFillRect(renderer, &text);
+  text.w = strlen(growth_text) * VISIBLE_TEXT_SIZE;
+  render_text(renderer, menu, growth_text, &text, color);
+
+  // graph
+  render_quad->y += 25;
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderFillRect(renderer, render_quad);
 
