@@ -114,13 +114,12 @@ void init_conway_growth(state_t *state) {
 
 void init_primordia(float (*grid)[GRID_H]) {
   int i,j;
+  float random;
 
   for(i = 0 ; i < GRID_W ; i++) {
     for (j = 0 ; j < GRID_H ; j++) {
-      grid[i][j] = random_float(0.0, 1.0);
-      // if (grid[i][j] <= 0.8) { // play with this
-      //   grid[i][j] = 0.0;
-      // }
+      random = random_float(-2.5, 1.0);
+      grid[i][j] = fmin(fmax(random, 0.0), 1.0);
     }
   }
 }
