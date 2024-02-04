@@ -18,9 +18,9 @@ int next_cycle_primordia(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t 
     for(j = 1 ; j < GRID_H - 1; j++) {
       float sum = 0.0;
 
-      for (int c = -1; c <= 1 ; c++) {
-        for (int d = -1 ; d <= 1 ; d++) {
-          sum += grid[i + c][j + d] * conwayKernel(c + 1, d + 1);
+      for (int c = 0; c < KERNEL_SIZE ; c++) {
+        for (int d = 0 ; d < KERNEL_SIZE ; d++) {
+          sum += grid[i + c - 1][j + d - 1] * state->kernel[c][d];
         }
       }
 

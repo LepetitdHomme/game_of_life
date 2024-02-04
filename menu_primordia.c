@@ -1,6 +1,6 @@
 #include "includes/common.h"
 
-int update_primordia_graph(state_t *state) {
+int updating_primordia_graph(state_t *state) {
   for (int x = 0; x < NUM_GROWTH_PRIMORDIA ; x++) {
     for (int y = 0 ; y < 3 ; y++) {
       if (mouse_on_button(state->primordia_graph_buttons[x][y], state)) {

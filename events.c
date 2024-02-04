@@ -23,6 +23,7 @@ void reset_game(state_t *state, float (*grid)[GRID_H]) {
       reinitialize_grid(grid);
       init_conway_growth(state);
   }
+  init_kernel(state);
   state->cycle_running = 0;
   state->cycle_count = 0;
   state->cells_count = 0;
@@ -64,9 +65,11 @@ void handle_event(state_t *state, float (*grid)[GRID_H], SDL_Event *event) {
         } else if (mouse_on_button(state->lenia_button, state) && state->current_rule != LENIA) {
           state->current_rule = LENIA;
           reset_game(state, grid);
-        } else if (state->current_rule == PRIMORDIA && update_primordia_graph(state)) {
+        } else if (state->current_rule == PRIMORDIA && updating_primordia_graph(state)) {
           // do nothing ?
-        } else if (state->current_rule == CONWAY && update_conway_graph(state)) {
+        } else if (state->current_rule == CONWAY && updating_conway_graph(state)) {
+          // do nothing ?
+        } else if (updating_kernel(state)) {
           // do nothing ?
         } else {
           state->holding_left_mouse = TRUE;

@@ -213,5 +213,6 @@ void draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state) {
   	draw_conway_menu(renderer, menu, state, &render_quad);
   } else if (state->current_rule == PRIMORDIA) {
 		draw_primordia_menu(renderer, menu, state, &render_quad);
-  }
+  } // draw_lenia_menu
+  draw_kernel(renderer, menu, state, &render_quad);
 }

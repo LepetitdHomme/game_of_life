@@ -21,6 +21,7 @@ OBJ = main.o \
 	grid.o \
 	events.o \
 	compute.o \
+	kernel.o \
 	menu.o menu_primordia.o menu_conway.o \
 	conway.o lenia.o primordia.o
 

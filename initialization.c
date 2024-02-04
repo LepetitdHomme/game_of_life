@@ -31,6 +31,7 @@ void init_game_state(state_t *state) {
 
   init_primordia_growth(state);
   init_conway_growth(state);
+  init_kernel(state);
 }
 
 void init_sdl(sdl_t *sdl) {
@@ -69,6 +70,24 @@ void init_menu(sdl_t *sdl, menu_t *menu) {
   if (menu->font == NULL) {
     printf("Failed to open font ! SDL_ttf error: %s\n", TTF_GetError());
     exit(EXIT_FAILURE);
+  }
+}
+
+void init_kernel(state_t *state) {
+  int kernel[KERNEL_SIZE][KERNEL_SIZE] = {
+    {1, 1, 1},
+    {1, 0, 1},
+    {1, 1, 1}
+  };
+
+  for (int i = 0; i < KERNEL_SIZE ; i++) {
+    for (int j = 0; j < KERNEL_SIZE ; j++) {
+      state->kernel[i][j] = kernel[i][j];
+      state->kernel_buttons[i][j].x = 0;
+      state->kernel_buttons[i][j].y = 0;
+      state->kernel_buttons[i][j].w = 0;
+      state->kernel_buttons[i][j].h = 0;
+    }
   }
 }
 

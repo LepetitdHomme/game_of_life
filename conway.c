@@ -19,52 +19,23 @@ int next_cycle(float (*grid)[GRID_H], float (*grid2)[GRID_H], state_t *state){
 
 	for(i = 1; i < GRID_W - 1 ; i++) {
 		for(j = 1 ; j < GRID_H - 1 ; j++) {
-			// IF ALIVE
-			if(grid[i][j] == 1) {
-				int count = 0;
-				if(grid[i-1][j-1] == 1)
-					count++;
-				if(grid[i][j-1] == 1)
-					count++;
-				if(grid[i+1][j-1] == 1)
-					count++;
-				if(grid[i-1][j] == 1)
-					count++;
-				if(grid[i+1][j] == 1)
-					count++;
-				if(grid[i-1][j+1] == 1)
-					count++;
-				if(grid[i][j+1] == 1)
-					count++;
-				if(grid[i+1][j+1] == 1)
-					count++;
-				// if(count == 2 || count == 3) {
-				if (state->survive_conway[count]) {
+			int sum = 0;
+
+			for (int x = 0 ; x < KERNEL_SIZE ; x++ ) {
+				for (int y = 0 ; y < KERNEL_SIZE; y++) {
+					sum += grid[i + x - 1][j + y - 1] * state->kernel[x][y];
+				}
+			}
+
+			if (grid[i][j] == 1) {
+				if (state->survive_conway[sum]) {
 					grid2[i][j] = 1;
 					cells_count++;
 				} else {
 					grid2[i][j] = 0;
 				}
-			} else { // IF DEAD
-				int count = 0;
-				if(grid[i-1][j-1] == 1)
-					count++;
-				if(grid[i][j-1] == 1)
-					count++;
-				if(grid[i+1][j-1] == 1)
-					count++;
-				if(grid[i-1][j] == 1)
-					count++;
-				if(grid[i+1][j] == 1)
-					count++;
-				if(grid[i-1][j+1] == 1)
-					count++;
-				if(grid[i][j+1] == 1)
-					count++;
-				if(grid[i+1][j+1] == 1)
-					count++;
-				// if(count == 3) {
-				if(state->born_conway[count]) {
+			} else {
+				if (state->born_conway[sum]) {
 					grid2[i][j] = 1;
 					cells_count++;
 				}

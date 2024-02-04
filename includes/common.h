@@ -64,6 +64,8 @@ typedef struct {
   int       born_conway[NUM_GROWTH_CONWAY];
   SDL_Rect  survive_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
   SDL_Rect  born_conway_graph_buttons[NUM_GROWTH_CONWAY][2];
+  int       kernel[KERNEL_SIZE][KERNEL_SIZE];
+  SDL_Rect  kernel_buttons[KERNEL_SIZE][KERNEL_SIZE];
 	int 			quit;
 	int 			mouse_pos_x;
 	int 			mouse_pos_y;
@@ -79,6 +81,7 @@ void    init_conway_growth(state_t *state);
 void 		init_primordia(float (*grid)[GRID_H]);
 void    init_primordia_growth(state_t *state);
 void 		init_lenia(float (*grid)[GRID_H]);
+void    init_kernel(state_t *state);
 void 		reinitialize_grid(float (*grid)[GRID_H]);
 
 /* 			grid */
@@ -103,6 +106,11 @@ int 		next_cycle_lenia(float (*grid)[GRID_H], float (*grid2)[GRID_H]);
 double 	gaussian(int type, int x);
 void 		display_gauss(SDL_Renderer *renderer);
 
+/*      kernel */
+int     *get_kernel();
+int     updating_kernel(state_t *state);
+void    draw_kernel(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *quad);
+
 /* 			compute */
 float 	gaussianKernel(int i, int j);
 float 	conwayKernel(int i, int j);
@@ -117,11 +125,11 @@ void    render_text(SDL_Renderer *renderer, menu_t *menu, char *text, SDL_Rect *
 void 		draw_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state);
 
 /* 			menu_primordia */
-int 		update_primordia_graph(state_t *state);
+int 		updating_primordia_graph(state_t *state);
 void 		draw_primordia_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *render_quad);
 
 /*      menu_conway */
-int     update_conway_graph(state_t *state);
+int     updating_conway_graph(state_t *state);
 void    draw_conway_menu(SDL_Renderer *renderer, menu_t *menu, state_t *state, SDL_Rect *quad);
 // int     update_conway_graph(state_t *state);
 
