@@ -7,12 +7,12 @@
 #include <time.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h> 
+#include <SDL2/SDL_ttf.h>
 
 #define WINDOW_WIDTH 1280 // >= 1000 for menu !!
 #define WINDOW_HEIGHT ((WINDOW_WIDTH * 9) / 16)
-#define SCALE 2
-#define CYCLE_INTERVAL 0.04 // in seconds ; at which interval the next cycle of life is triggered
+#define SCALE 4
+#define CYCLE_INTERVAL 60 // in seconds ; at which interval the next cycle of life is triggered
 #define GRID_W WINDOW_WIDTH/SCALE
 #define GRID_H WINDOW_HEIGHT/SCALE
 

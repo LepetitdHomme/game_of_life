@@ -36,7 +36,7 @@ int main() {
 
     /* computes next cycle on appropriate grid, depending on life CYCLE_INTERVAL */
     if (state.cycle_running) {
-      if ((state.current_time - last_cycle) / 1000.0 > CYCLE_INTERVAL) {
+      if ((state.current_time - last_cycle) > CYCLE_INTERVAL) {
         last_cycle = state.current_time;
         state.cycle_count++;
         if (state.current_grid == 0) {
